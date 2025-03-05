@@ -1,0 +1,72 @@
+meteorologist_task:
+  description: >
+    From the provided {query}, extract the following information:
+    - Identify all locations mentioned in the query.
+    - Identify the country associated with each location. If no country is mentioned, default to "USA."
+    - Retrieve real-time weather data for each identified location, including:
+      - Temperature (°C)
+      - Humidity (%)
+      - Precipitation (mm)
+      - Wind Speed (m/s)
+      - Overall Weather Conditions
+
+    Key steps include:
+    - Conducting a thorough weather analysis for each identified location, ensuring accuracy and relevance given the current year.
+    - Identifying any significant atmospheric events or anomalies.
+    - If a country is not mentioned, assume the location is in the USA by default.
+    - If a country is mentioned, use the specified country to determine the correct location.
+
+    Handling edge cases:
+    - If no location is found in the query, return None for all weather parameters.
+    - If the query does not request weather-related parameters (e.g., temperature, humidity, wind speed, etc.), return: "Topic is not related to weather."
+    - If multiple locations are mentioned, return a structured response for each location.
+
+    Your final response must include:
+    - For each identified location:
+      - Country: The country where the location belongs.
+      - Temperature: Current temperature in Celsius, or None if no location is provided.
+      - Humidity: Measured humidity percentage, or None if no location is provided.
+      - Conditions: Description of the overall weather (e.g., sunny, rainy, cloudy), or None if no location is provided.
+      - Precipitation: Amount of rainfall or snowfall (if any), or None if no location is provided.
+      - Wind Speed: Measured wind speed in meters per second, or None if no location is provided.
+      - Other Information: Insights on any extreme weather conditions, trends, or significant atmospheric observations.
+
+  expected_output: >
+    - For each identified location:
+      - Country: The country where the location belongs.
+      - Temperature: Current temperature in Celsius, or None if no location is provided.
+      - Humidity: Measured humidity percentage, or None if no location is provided.
+      - Conditions: Description of the overall weather (e.g., sunny, rainy, cloudy), or None if no location is provided.
+      - Precipitation: Amount of rainfall or snowfall (if any), or None if no location is provided.
+      - Wind Speed: Measured wind speed in meters per second, or None if no location is provided.
+      - Other Information: Insights on any extreme weather conditions, trends, or significant atmospheric observations.
+    - If multiple locations are found, return separate weather data for each location.
+    - If the query does not request weather-related details, return: "Topic is not related to weather."
+
+  agent: meteorologist
+
+weather_parameter_task:
+  description: >
+    Convert the extracted weather parameters from `meteorologist_task` into a clear and logical sentence.
+    - Use only the weather parameters that are **not null**.
+    - Construct a **concise, well-structured summary** of the weather conditions for each location.
+    - If multiple locations are provided, generate **a separate sentence for each**.
+    - Maintain clarity and readability while preserving all relevant details.
+
+    Handling edge cases:
+    - If **all weather parameters are null**, return: "No weather data available for the specified location."
+    - If the query does not request weather-related parameters, return: "Topic is not related to weather."
+    - Ensure that **units are included** (e.g., °C for temperature, m/s for wind speed).
+
+    Your final response must be structured as follows:
+    - If all values are available:  
+      **"The weather in location, country is conditions with a temperature of temperature°C, humidity at humidity%, wind speed of wind_speed m/s, and precipitation of precipitation mm."**
+    - If some values are missing, exclude null fields and adjust grammar accordingly.
+
+  expected_output: >
+    - A single well-structured sentence summarizing the weather conditions for each location, using only the available parameters.
+    - If multiple locations are present, return separate sentences for each.
+    - If no weather data is available, return: "No weather data available for the specified location."
+    - If the query does not request weather-related details, return: "Topic is not related to weather."
+
+  agent: weather_parameter_agent
