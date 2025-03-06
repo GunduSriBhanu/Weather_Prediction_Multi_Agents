@@ -1,4 +1,6 @@
 from typing import Type
+import sys
+sys.path.append("..")  # Add the parent directory to path
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 import os  # If using environment variables for API keys
@@ -7,6 +9,7 @@ import requests  # For making HTTP requests
 from dotenv import load_dotenv
 from typing import Annotated, Optional, Any, Type
 load_dotenv()
+
 
 class WeatherMapToolInput(BaseModel):
     """Input schema for WeatherMapTool."""

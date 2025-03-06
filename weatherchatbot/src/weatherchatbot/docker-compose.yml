@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  crewai:
+    build: .
+    container_name: crewai-weather
+    env_file:
+      - .env
+    command: python weather_crew.py
+    volumes:
+      - .:/app
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit  # Ensure this exists
+    container_name: streamlit-weather
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    depends_on:
+      - crewai

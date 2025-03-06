@@ -1,0 +1,6 @@
+crewai>=0.79.4
+python-dotenv
+ipykernel
+agentops 
+crewai[tools]
+streamlit

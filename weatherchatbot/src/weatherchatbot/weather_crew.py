@@ -2,10 +2,13 @@
 import os
 import tiktoken 
 import yaml
-from crewai import Agent, Task, Crew,Process, LLM
-from crewai.project import CrewBase, agent, crew, task
+from crewai import Agent, Task, Crew,Process #, LLM
+# from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel, Field, HttpUrl
+import sys
+sys.path.append("../weatherchatbot/config")
 from tools.weather_tool import WeatherMapTool
+# from weatherchatbot.tools.weather_tool import WeatherMapTool
 from typing import List
 
 # import agentops
@@ -13,7 +16,11 @@ from dotenv import load_dotenv
 load_dotenv()
 import logging
 
-openai_api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not OPENAI_API_KEY or not WEATHER_API_KEY:
+    raise ValueError("API keys are missing! Ensure they are set in the environment variables.")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,10 +33,16 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+# files = {
+#     'agents': r'config\agents.yaml',
+#     'tasks': r'config\tasks.yaml'
+# }
+
 files = {
-    'agents': r'config\agents.yaml',
-    'tasks': r'config\tasks.yaml'
+    'agents': os.path.join("config", "agents.yaml"),  # Cross-platform path
+    'tasks': os.path.join("config", "tasks.yaml")
 }
+
 
 weather_tool = WeatherMapTool()
 
@@ -99,24 +112,3 @@ weather_parameter_task = Task(
     config=tasks_config['weather_parameter_task'],
     agent=weather_parameter_agent
 )
-
-# Creating the Weather Crew (Corrected)
-Weather_crew = Crew(
-    agents=[meteorologist_agent, weather_parameter_agent],  # Only includes weather-related agents
-    tasks=[find_meteorological_task, weather_parameter_task],  # Only includes weather-related tasks
-    process=Process.sequential,  # Tasks execute in order
-    verbose=True
-)
-
-# Test with Query
-request = {"query": "What is the temperature in Vancouver and London?"}
-
-# Run the Crew Execution
-weather_results = Weather_crew.kickoff(inputs=request)
-print(weather_results)
-
-
-print(f"Tasks Output: {weather_results.tasks_output}")
-print(f"Token Usage: {weather_results.token_usage}")
-print(Weather_crew.usage_metrics)
-

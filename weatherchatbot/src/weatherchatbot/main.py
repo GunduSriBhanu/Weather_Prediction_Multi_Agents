@@ -1,65 +1,90 @@
-#!/usr/bin/env python
-import sys
-import warnings
+import logging
+from fastapi import FastAPI
+from pydantic import BaseModel
+import uvicorn
 
-from datetime import datetime
+# ✅ Import CrewAI Flow
+from weather_crew import *
+from flow import WeatherMapFlow
 
-from weatherchatbot.crew import Weatherchatbot
+# ✅ Configure Logging
+logging.basicConfig(level=logging.INFO)
 
-warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+# ✅ Initialize FastAPI
+app = FastAPI()
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
+# ✅ Root Route
+@app.get("/")
+def read_root():
+    return {"message": "Weather Chat BOT Application."}
 
-def run():
-    """
-    Run the crew.
-    """
-    inputs = {
-        'topic': 'AI LLMs',
-        'current_year': str(datetime.now().year)
+# ✅ Define Request Model
+class WeatherRequest(BaseModel):
+    query: str
+    type_data: str  # "Batch" for parameters or "Response" for full AI output
+
+# ✅ GET: Chatbot Mode
+@app.get("/get-chatbot")
+def get_chatbot(query: str, type_data: str = "Response"):
+    """Fetch weather data using GET request (Chatbot Mode)."""
+    logging.info(f"📌 GET Request Received: query={query}, type_data={type_data}")
+
+    # ✅ Initialize and Run Flow
+    flow = WeatherMapFlow()
+    weather_results = flow.kickoff(inputs={"type_data": type_data, "query": query})
+
+    return {
+        "status": "success",
+        "weather_data": weather_results.json_dict if hasattr(weather_results, "json_dict") else "No data available"
     }
-    
-    try:
-        Weatherchatbot().crew().kickoff(inputs=inputs)
-    except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
 
+# ✅ PUT: Chatbot Mode
+@app.put("/put-chatbot")
+def put_chatbot(request: WeatherRequest):
+    """Process weather query via PUT request (Chatbot Mode)."""
+    logging.info(f"📌 PUT Request Received: {request}")
 
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "AI LLMs"
+    # ✅ Initialize and Run Flow
+    flow = WeatherMapFlow()
+    weather_results = flow.kickoff(inputs={"type_data": request.type_data, "query": request.query})
+
+    return {
+        "status": "success",
+        "weather_data": weather_results.json_dict if hasattr(weather_results, "json_dict") else "No data available"
     }
-    try:
-        Weatherchatbot().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
 
-    except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")
+# ✅ GET: Parameters Mode
+@app.get("/get-parameters")
+def get_parameters(query: str, type_data: str = "Batch"):
+    """Fetch weather parameters using GET request."""
+    logging.info(f"📌 GET Request Received: query={query}, type_data={type_data}")
 
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        Weatherchatbot().crew().replay(task_id=sys.argv[1])
+    # ✅ Initialize and Run Flow
+    flow = WeatherMapFlow()
+    weather_results = flow.kickoff(inputs={"type_data": type_data, "query": query})
 
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
-
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs"
+    return {
+        "status": "success",
+        "weather_data": weather_results.json_dict if hasattr(weather_results, "json_dict") else "No data available"
     }
-    try:
-        Weatherchatbot().crew().test(n_iterations=int(sys.argv[1]), openai_model_name=sys.argv[2], inputs=inputs)
 
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")
+# ✅ PUT: Parameters Mode
+@app.put("/put-parameters")
+def put_parameters(request: WeatherRequest):
+    """Process weather query via PUT request (Parameters Mode)."""
+    logging.info(f"📌 PUT Request Received: {request}")
+
+    # ✅ Initialize and Run Flow
+    flow = WeatherMapFlow()
+    weather_results = flow.kickoff(inputs={"type_data": request.type_data, "query": request.query})
+
+    return {
+        "status": "success",
+        "weather_data": weather_results.json_dict if hasattr(weather_results, "json_dict") else "No data available"
+    }
+
+# ✅ Run FastAPI Server
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    # uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
