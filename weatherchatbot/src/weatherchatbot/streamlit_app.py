@@ -2,6 +2,15 @@ import streamlit as st
 from crewai import Crew, Process
 from weather_crew import *
 
+from dotenv import load_dotenv
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+if not OPENAI_API_KEY or not WEATHER_API_KEY:
+    raise ValueError("API keys are missing! Ensure they are set in the environment variables.")
+
 # ✅ Configure Streamlit Page
 st.set_page_config(page_title="Weather Prediction", layout="wide")
 
