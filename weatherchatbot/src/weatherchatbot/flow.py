@@ -100,10 +100,10 @@ flow_plot = flow.plot("flow.png")
     
 # })
 
-# # Response
+# Response
 # weather_results = flow.kickoff(inputs={
 #     "type_data": "Response",
 #     "query": "What is the weather of New York?",
     
 # })
-# print(weather_results.raw)
+# print(weather_results)

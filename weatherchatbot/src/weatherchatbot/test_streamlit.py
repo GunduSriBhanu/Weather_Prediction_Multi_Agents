@@ -11,18 +11,13 @@ load_dotenv()
 ## Configure API KEYS to Support multiple environments
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-HOST_FASTAPI = os.getenv("HOST_FASTAPI")
 
 # Verifying API KEYS are provided
 if not OPENAI_API_KEY or not WEATHER_API_KEY:
     raise ValueError("API keys are missing! Ensure they are set in the environment variables.")
     
 # Define API URLs
-# BATCH_API_URL = "http://127.0.0.1:8000/kickoff-parameters/"
-# BATCH_API_URL = "http://10.0.0.6:8000/kickoff-parameters/"
-BATCH_API_URL = F"http://{HOST_FASTAPI}:8000/kickoff-parameters/"
-
-
+BATCH_API_URL = "http://127.0.0.1:8000/kickoff-parameters/"
 
 
 # Page Selection

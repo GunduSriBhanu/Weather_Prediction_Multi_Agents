@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.12"
 
 services:
   crewai:
@@ -9,6 +9,21 @@ services:
     command: python weather_crew.py
     volumes:
       - .:/app
+    restart: always  # Ensures the service restarts if it fails
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi  # Ensure Dockerfile exists for FastAPI
+    container_name: fastapi-weather
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - crewai  # FastAPI will start only after CrewAI is up
+    restart: always
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 
   streamlit:
     build:
@@ -21,3 +36,6 @@ services:
       - .:/app
     depends_on:
       - crewai
+      - fastapi  # Streamlit will start only after both CrewAI and FastAPI are running
+    restart: always
+    command: streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0
