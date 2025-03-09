@@ -26,6 +26,7 @@ Add .env file with assigned following parameters:
 Use the **http://localhost:8501** url to test the streamlit application for weather prediction.
 
 ## Flow of Crewai:
+![image](https://github.com/user-attachments/assets/1a934bb1-4f5f-4082-b4fa-7cd145f068a7)
 This code is designed to create a **multi-agent system** using the **CrewAI** framework to process and respond to weather-related queries. Let's break it down step by step to explain each part of the code:
 
 ### **1. Importing Dependencies**
