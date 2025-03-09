@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import uvicorn
 from typing import Dict, Any
 
-# ✅ Import CrewAI Flow
+# Import CrewAI Flow
 from weather_crew import *
 from flow import WeatherMapFlow
 
@@ -18,26 +18,24 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-# ✅ Root Route
+# Root Route
 @app.get("/")
 def read_root():
-    return {"message": "✅ Weather Chatbot API is running. Use /docs for API documentation."}
+    return {"message": "Weather Chatbot API is running. Use /docs for API documentation."}
 
-# ✅ Configure Logging
+# Configure Logging
 logging.basicConfig(level=logging.INFO)
 
-# app = FastAPI()
 flow = WeatherMapFlow()
 
-
-# ✅ Global Storage for Chatbot & Batch Mode
+# Global Storage for Chatbot & Batch Mode
 latest_chatbot_inputs = {}
 latest_chatbot_result = {}
 
 latest_batch_inputs = {}
 latest_batch_result = {}
 
-# ✅ Define Input Model
+# Define Input Model
 class Inputs(BaseModel):
     query: str
     #type_data: str  # "Response" for full AI output
@@ -46,6 +44,7 @@ class ChatbotOutputs(BaseModel):
     Response: str
     # type_data: str  # "Response" for full AI output
 
+# Define output Model.
 class BatchOutputs(BaseModel):
     location: str  # City Name
     temperature: float
@@ -56,7 +55,7 @@ class BatchOutputs(BaseModel):
     extreme_alerts: str
     additional_info: str
 
-# chatbot Mode: Kickoff Processing
+# Batch Mode: Kickoff Processing
 @app.post("/kickoff-parameters/")
 async def kickoff_batch(inputs: Inputs):
     """Process chatbot-specific queries."""
@@ -96,13 +95,14 @@ async def kickoff_batch(inputs: Inputs):
     
     return {"Inputs": latest_batch_inputs}
 
+# Get the results of pydantic output in Json format for Batch processing.
 @app.get("/kickoff-parameters/")
 async def get_last_result():
     if latest_batch_result is None or latest_batch_inputs is None:
         return {"message": "No results available. Please make a POST request to /kickoff/ first."}
     return {"Inputs": latest_batch_inputs, "Outputs": latest_batch_result}
 
-# chatbot Mode: Kickoff Processing
+# chatbot Mode: Kickoff Processing for sending input as query
 @app.post("/kickoff-chatbot/")
 async def kickoff_chatbot(inputs: Inputs):
     """Process chatbot-specific queries."""
@@ -136,12 +136,13 @@ async def kickoff_chatbot(inputs: Inputs):
     
     return {"Inputs": latest_batch_inputs}
 
+# Get the results for Chatbot QnA format.
 @app.get("/kickoff-chatbot/")
 async def get_last_chat_result():
     if latest_chatbot_result is None or latest_chatbot_inputs is None:
         return {"message": "No results available. Please make a POST request to /kickoff/ first."}
     return {"Inputs": latest_chatbot_inputs, "Outputs": latest_chatbot_result}
 
-# ✅ Run FastAPI Server
+#  Run FastAPI Server when it needs to run using python cmd.
 # if __name__ == "__main__":
 #     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

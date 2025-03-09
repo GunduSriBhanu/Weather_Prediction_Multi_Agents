@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field, HttpUrl
 import sys
 sys.path.append("../weatherchatbot/config")
 from tools.weather_tool import WeatherMapTool
-# from weatherchatbot.tools.weather_tool import WeatherMapTool
 from typing import List
 
 # import agentops
@@ -38,14 +37,16 @@ logging.basicConfig(
 #     'tasks': r'config\tasks.yaml'
 # }
 
+# Config files in Yaml format with Prompt engineering from agents and task.
 files = {
     'agents': os.path.join("config", "agents.yaml"),  # Cross-platform path
     'tasks': os.path.join("config", "tasks.yaml")
 }
 
-
+# Assigned Weaather tool using OpenWeatherMap API
 weather_tool = WeatherMapTool()
 
+#Pydantic output for using the variables to store in database for batch processing
 class WeatherChatbot(BaseModel):
     location: str = Field(..., description="The location for which the weather data is provided.")
     temperature: float = Field(..., description="Current temperature in Celsius.")
@@ -104,7 +105,7 @@ weather_parameter_agent = Agent(
 find_meteorological_task = Task(
     config=tasks_config['meteorologist_task'],
     agent=meteorologist_agent,
-    output_pydantic=WeatherChatbot  # Ensuring correct structured output
+    output_pydantic=WeatherChatbot  # Ensuring correct structured output in Pydantic or Json format
 )
 
 # Creating the parameters Task

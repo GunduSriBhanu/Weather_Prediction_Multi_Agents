@@ -110,8 +110,7 @@ elif page == "Chatbot Mode":
             }
             st.info("🔍 Fetching weather data... Please wait.")
                 
-            weather_results = flow.kickoff(inputs=request)
-            print(weather_results)
+            weather_results = flow.kickoff(inputs=request)          
             
             # Display the results
             if weather_results:

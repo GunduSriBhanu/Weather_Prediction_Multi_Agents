@@ -1,41 +1,38 @@
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+# import agentops
+# agentops.init(api_key=os.getenv('AGENTOPS_API_KEY'))
 from crewai.flow.flow import Flow, listen, start
 from dotenv import load_dotenv
 from crewai.flow.flow import Flow, listen, start, router, or_
 from weather_crew import *
+
 import logging
 logging.basicConfig(level=logging.INFO)
 
-
-
-# ✅ Define Weather_State
+# Define Weather_State
 class Weather_State(BaseModel):
-    # row_number: int = 0
-    # location: str = Field("", description="Geographical location for the weather data.")
-    # temperature: float = Field(None, description="Current temperature in Celsius.")
-    # humidity: int = Field(None, description="Humidity percentage.")
-    # conditions: str = Field("", description="Weather condition like sunny, cloudy.")
-    # precipitation: float = Field(None, description="Precipitation amount in mm.")
-    # wind_speed: float = Field(None, description="Wind speed in meters per second.")
-    # extreme_alerts: str = Field("None", description="Any extreme weather alerts.")
-    # additional_info: str = Field("", description="Additional weather-related insights.")
     query: str = Field("", description="Query for weather data.")
     type_data: str = Field("Response", description="Mode of execution: 'Batch' for parameters or 'Response' for full output")
 
-# ✅ Define WeatherMapFlow
+# Define WeatherMapFlow
 class WeatherMapFlow(Flow[Weather_State]):   
-
+    
+    # Start the flow of CrewAI
     @start()
     def start_flow(self):
         logging.info("🌟 Starting the Weather Prediction Flow.")
        
-
+    # Initialize the data
     @listen(start_flow)
     def data_initializer(self):
         """Ensure the initial request is properly initialized."""
         # self.state.type_data = None
         # self.state.query = None        
         
-
+    # Router is worked based on decision made either for Parameters mode or Full Response mode.
     @router(data_initializer)
     def crew_router(self):
         """Route AI to either **parameters-only** or **full response mode**."""
@@ -46,12 +43,12 @@ class WeatherMapFlow(Flow[Weather_State]):
         else:
             return "Response"
 
-    
+    # Batch mode is used for batch processing and creating APIs that could be used to interact and store results in database.
     @listen("Parameters")
     def weather_Batch(self, assigned_crew):
         """Execute AI processing for either **Parameters or Full Response mode**."""      
         
-        logging.info("📌 Running in **Parameters Mode**.")
+        logging.info("Running in **Parameters Mode**.")
         Weather_crew = Crew(
             agents=[meteorologist_agent],  
             tasks=[find_meteorological_task],
@@ -61,15 +58,14 @@ class WeatherMapFlow(Flow[Weather_State]):
         
         request = {"query": self.state.query}
         weather_results = Weather_crew.kickoff(inputs=request)
-
         return weather_results
         
-        
+    # Response Mode is used for Chatbot Application especially frontend applications     
     @listen("Response")
     def weather_Chatbot(self, assigned_crew):
-        """Execute AI processing for either **Parameters or Full Response mode**."""       
+        """Execute AI processing for **Full Response mode**."""       
         
-        logging.info("📌 Running in **Parameters Mode**.")
+        logging.info("Running in **Chatbot Response Mode**.")
         Weather_crew = Crew(
             agents=[meteorologist_agent, weather_parameter_agent],
             tasks=[find_meteorological_task, weather_parameter_task],
@@ -85,6 +81,7 @@ class WeatherMapFlow(Flow[Weather_State]):
 flow = WeatherMapFlow()
 flow_plot = flow.plot("flow.png")
 
+## Testing the flow of Router with results.
 # weather_results = flow.kickoff()
 
 # flow = WeatherMapFlow(state=Weather_State(
@@ -100,10 +97,10 @@ flow_plot = flow.plot("flow.png")
     
 # })
 
-# Response
 # weather_results = flow.kickoff(inputs={
 #     "type_data": "Response",
 #     "query": "What is the weather of New York?",
     
 # })
 # print(weather_results)
+# agentops.end_session("Success") 

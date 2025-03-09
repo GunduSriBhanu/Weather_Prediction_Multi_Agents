@@ -30,8 +30,10 @@ uvicorn app:app --host 127.0.0.1 --port 8000 --reload
 
 # To kill any running ports thats interfering the usecase:
 netstat -ano | findstr :8000
-
+taskkill /F /IM python.exe /T
 python -c "import os; os.system('taskkill /F /IM python.exe')"
+
+streamlit run web_application.py --server.port 8502
 
 # Mandatory Libraries needed to run the code of multiagents:
 crewai>=0.79.4
