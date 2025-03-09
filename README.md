@@ -11,10 +11,12 @@ activate env using **myenv\Scripts\activate**
 
 ### Step 2:
 Add .env file with assigned following parameters:
-- MODEL="gpt-4o-mini"<open_api_key>"
+- MODEL="gpt-4o-mini"
+- OPEN_API_KEY = "<open_api_key>"
 - WEATHER_API_KEY="<weather_api_key>"
 - HOST_FASTAPI=<IPV4_Address>  
-- AGENTOPS_API_KEY = <agentops>'which is used for both streamlit and fastapi"
+- AGENTOPS_API_KEY = <agentops_Key>
+  - 'which are used for both streamlit and fastapi"
 
 ### Step 3:
 - Go to path **weatherchatbot\src\weatherchatbot**
