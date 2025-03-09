@@ -6,8 +6,8 @@ Take-Home-Assignment:
 ## Steps to run Code:
 ### Step 1: 
 Ensure Python 3.12 is installed
-Create env "python -m venv myenv"
-activate env using "myenv\Scripts\activate"
+Create env **python -m venv myenv**
+activate env using **myenv\Scripts\activate**
 
 ### Step 2:
 Add .env file with assigned following parameters:
@@ -17,11 +17,11 @@ HOST_FASTAPI=<IPV4_Address>
 AGENTOPS_API_KEY = <agentops>'which is used for both streamlit and fastapi"
 
 ### Step 3:
-Go to path "weatherchatbot\src\weatherchatbot"
-use command "docker-compose up --build" to build the docker compose file that builds overall Crewai flow, fast api and streamlit application.
+Go to path **weatherchatbot\src\weatherchatbot**
+use command **docker-compose up --build** to build the docker compose file that builds overall Crewai flow, fast api and streamlit application.
 
 ### Step 4:
-Use the http://localhost:8501 url to test the streamlit application for weather prediction.
+Use the **http://localhost:8501** url to test the streamlit application for weather prediction.
 
 ## Flow of Crewai:
 This code is designed to create a **multi-agent system** using the **CrewAI** framework to process and respond to weather-related queries. Let's break it down step by step to explain each part of the code:
