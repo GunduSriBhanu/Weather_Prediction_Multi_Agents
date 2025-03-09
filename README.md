@@ -11,14 +11,14 @@ activate env using **myenv\Scripts\activate**
 
 ### Step 2:
 Add .env file with assigned following parameters:
-MODEL="gpt-4o-mini"<open_api_key>"
-WEATHER_API_KEY="<weather_api_key>"
-HOST_FASTAPI=<IPV4_Address>  
-AGENTOPS_API_KEY = <agentops>'which is used for both streamlit and fastapi"
+- MODEL="gpt-4o-mini"<open_api_key>"
+- WEATHER_API_KEY="<weather_api_key>"
+- HOST_FASTAPI=<IPV4_Address>  
+- AGENTOPS_API_KEY = <agentops>'which is used for both streamlit and fastapi"
 
 ### Step 3:
-Go to path **weatherchatbot\src\weatherchatbot**
-use command **docker-compose up --build** to build the docker compose file that builds overall Crewai flow, fast api and streamlit application.
+- Go to path **weatherchatbot\src\weatherchatbot**
+- Use command **docker-compose up --build** to build the docker compose file that builds overall Crewai flow, fast api and streamlit application.
 
 ### Step 4:
 Use the **http://localhost:8501** url to test the streamlit application for weather prediction.
